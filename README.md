@@ -3,7 +3,7 @@ Computing logic - my language
 
 
 # EBNF
-
+```
    statement
       : if
       | print
@@ -111,3 +111,4 @@ Computing logic - my language
      | 'true'
      | 'false'
      ;
+```
