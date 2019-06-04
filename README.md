@@ -1,6 +1,13 @@
-# toy-language
-Computing logic - my language
+# Toy - Minha linguagem de programação
+Informações a respeito da linguagem no arquivo apresentacao_do_projeto.pdf encontrado no repositório
 
+# Executando o projeto
+Criamos um compilador em python para poder executar nossos arquivos .toy
+para utilizar clone o repositório e execute 
+```
+$ python main.py [arquivo de entrada].toy
+```
+arquivo test.toy disponível para testes no repositório.
 
 # EBNF
 ```
