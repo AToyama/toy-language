@@ -1,0 +1,35 @@
+function soma(integer x, integer y, boolean bool) as integer
+
+    if bool then
+        soma is equal to x plus y
+    end if
+
+end function
+
+Void main()
+
+    ' bool ops
+    integer x
+    integer y
+    boolean cond
+    cond is equal to true
+    x is equal to 10
+    y is equal to 2
+
+    if x is less than y then
+      print x times y    
+    else
+      print x divided by y
+    end if
+
+    integer result
+
+    result is equal to soma(x,y,cond)
+    print result
+
+    while y is less than 10 {
+      print y
+      y is equal to y plus 1
+    }
+
+end void
