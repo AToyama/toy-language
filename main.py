@@ -19,7 +19,7 @@ CHAR = {
     "}" : "CLOSEB",
 }
 
-RESERVED = ['is','equal','to','plus','minus','times','divided','by','greather','less','than','function','input','print','begin','end','and','or','not','while','wend','if','then','else','dim','true','false','void','as','boolean','integer']
+RESERVED = ['is','equal','to','plus','minus','times','divided','by','greater','less','than','function','input','print','begin','end','and','or','not','while','wend','if','then','else','dim','true','false','void','as','boolean','integer']
 
 VARNAME_CHARS = '0123456789_' + ascii_letters
 
@@ -106,7 +106,7 @@ class Tokenizer():
 
         self.actual = token
 
-        print(self.actual.tp,self.actual.value)
+        # print(self.actual.tp,self.actual.value)
 
 
 class Parser():
@@ -367,35 +367,38 @@ class Parser():
             Parser.tokens.selectNext()
             condition = Parser.parseRelExpression()
             
-            if Parser.tokens.actual.tp == "THEN":
+            if Parser.tokens.actual.tp == "OPENB":
+                Parser.tokens.selectNext()
+                
+                if_statements = []
+
+                while Parser.tokens.actual.tp != "CLOSEB":
+
+                    if_statements.append(Parser.parseStatement())
+
+                    if Parser.tokens.actual.tp == "BREAK_LINE":
+                        Parser.tokens.selectNext()
+                    
+                    else:
+                        raise ValueError(f"BREAK_LINE expected, got {Parser.tokens.actual.tp}")
+
+                if Parser.tokens.actual.tp != "CLOSEB":
+                    raise ValueError(f"CLOSEB expected, got {Parser.tokens.actual.tp}")
+          
                 Parser.tokens.selectNext()
 
                 if Parser.tokens.actual.tp == "BREAK_LINE":
+                    Parser.tokens.selectNext()
+          
+                if Parser.tokens.actual.tp == "ELSE":
+                    Parser.tokens.selectNext()
                     
-                    if_statements = []
-
-                    while Parser.tokens.actual.tp != "END" and Parser.tokens.actual.tp != "ELSE":
-                        if_statements.append(Parser.parseStatement())
-
-                        if Parser.tokens.actual.tp == "BREAK_LINE":
-                            Parser.tokens.selectNext()
-                        
-                        else:
-                            raise ValueError(f"BREAK_LINE expected, got {Parser.tokens.actual.tp}")
-
-
-                    if Parser.tokens.actual.tp == "ELSE":
+                    if Parser.tokens.actual.tp == "OPENB":
                         Parser.tokens.selectNext()
-                        
-                        if Parser.tokens.actual.tp == "BREAK_LINE":
-                            Parser.tokens.selectNext()
-                        
-                        else:
-                            raise ValueError(f"BREAK_LINE expected, got {Parser.tokens.actual.tp}")
-
+                    
                         else_statements = []
 
-                        while Parser.tokens.actual.tp != "END":
+                        while Parser.tokens.actual.tp != "CLOSEB":
                             else_statements.append(Parser.parseStatement())
 
                             if Parser.tokens.actual.tp == "BREAK_LINE":
@@ -404,32 +407,17 @@ class Parser():
                             else:
                                 raise ValueError(f"BREAK_LINE expected, got {Parser.tokens.actual.tp}")
                     
+                        if Parser.tokens.actual.tp != "CLOSEB":
+                            raise ValueError(f"CLOSEB expected, got {Parser.tokens.actual.tp}")
+                        
+                        node = If([condition,if_statements,else_statements])
                         Parser.tokens.selectNext()
-                            
-                        if Parser.tokens.actual.tp == "IF":
-                            node = If([condition,if_statements,else_statements])
-                            Parser.tokens.selectNext()
-
-                        else:
-                            raise SyntaxError(f"IF token expected, got {Parser.tokens.actual.value}")
-                    
-                    elif Parser.tokens.actual.tp == "END":
-
-                        Parser.tokens.selectNext()
-                            
-                        if Parser.tokens.actual.tp == "IF":
-                            node = If([condition,if_statements])
-                            Parser.tokens.selectNext()
-
-                        else:
-                            raise SyntaxError(f"IF token expected, got {Parser.tokens.actual.value}")    
-
-                    else:
-                        raise SyntaxError(f"ELSE token expected, got {Parser.tokens.actual.value}")
+                
                 else:
-                    raise SyntaxError(f"must skip a line after THEN token")    
+                    node = If([condition,if_statements])
+
             else:
-                raise SyntaxError(f"THEN token expected, got {Parser.tokens.actual.value}")
+                raise SyntaxError(f"OPENB token expected, got {Parser.tokens.actual.value}")
         else:
             return NoOp(None)
 

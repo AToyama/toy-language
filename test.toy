@@ -1,10 +1,19 @@
 function soma(integer x, integer y, boolean bool) as integer
 
-    if bool then
+    if bool {
         soma is equal to x plus y
-    end if
+    }
 
 end function
+
+void rec(integer bla)
+
+    print(bla)
+    if bla is less than 100{
+    rec(bla plus 1)
+    }  
+
+end void
 
 Void main()
 
@@ -16,11 +25,12 @@ Void main()
     x is equal to 10
     y is equal to 2
 
-    if x is less than y then
+    if x is less than y {
       print x times y    
-    else
+    }
+    else {
       print x divided by y
-    end if
+    }
 
     integer result
 
@@ -31,5 +41,7 @@ Void main()
       print y
       y is equal to y plus 1
     }
+
+    rec(x)
 
 end void
