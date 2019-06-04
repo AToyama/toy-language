@@ -1,4 +1,5 @@
-### Falta a EBNF e a apresentação
+### Falta a EBNF e a apresentação para fazer
+### vou entregar até 23:59 de 04/06
 
 # toy-language
 Computing logic - my language
