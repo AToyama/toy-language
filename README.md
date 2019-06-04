@@ -1,117 +1,100 @@
-### Falta a EBNF e a apresentação para fazer
-### vou entregar até 23:59 de 04/06
-
 # toy-language
 Computing logic - my language
 
 
 # EBNF
 ```
-   statement
-      : if
-      | print
-      | expression
-      | for
-      | while
-      | return
-      | break
-      | function
-      | variable
+   program
+      : FuncDec
+      | VoidDec
       ;
-
-   if
-     : 'if', comparison, '{', statement, '}'
-     | 'if', comparison, '{', statement, '}', 'else', comparison, '{', statement, '}'
-     | 'if', comparison, '{', statement, '}', elif, 'else', comparison, '{', statement, '}'
-     ;
-
-   elif
-     : 'elif', comparison, '{', statement '}'
-     ;
-
-   comparison
-     : expression, '==', 'expression
-     | expression, '>', 'expression
-     | expression, '<', 'expression
-     | expression, '<=', 'expression
-     | expression, '>=', 'expression
-     ;
-
-   print
-     : '\p', expression
-     ;
-
-   for
-     :'for',expression,'{', statement, '}'
-     ;
-
+      
+   VoidDec
+      : 'void', identifier, '(', ')', '\n', { statement, '\n }, 'end', 'void'
+      | 'void', identifier, '(', type, identifier, {',', type, identifier} ,')', '\n', {statement, '\n}, 'end', 'void'
+      ;
+      
+   FuncDec
+      : 'function', identifier, '(', ')', 'as', type, '\n', { statement, '\n }, 'end', 'function'
+      | 'function', identifier, '(', type, identifier, {',', type, identifier} ,')', 'as', type, '\n', {statement, '\n}, 'end', 'function'
+      ;   
+    
+   statement
+      : assignment
+      | funccall
+      | while
+      | print
+      | declaration
+      | if
+      ;
+   
+   assignment
+      : identifier, 'is', 'equal', 'to', relExpression
+      ;
+      
+   funccall
+      : identifier, '(', ')'
+      | identifier, '(', type, identifier, {type, identifier}, ')'
+      ;
+      
    while
-     :'while',expression,'{', statement, '}'
-     ;
-
-   return
-     : '\r', expression
-     ;
-
-   break
-     : '\b', expression
-     ;
-
-   variable
-     : name, '=', expression
-     ;
-
-   name
-     : string, {int,string,'-','_'}
-     ;
-
-   function
-     : name, '(', arguments, ')', '{', statement, return,'}'
-     ;  
-
-   arguments
-     : {name,','}
-     ;
-
+      : 'while', relExpression, '{', {statement, '\n'}, '}'
+      ;
+      
+   print
+      : print, relExpression
+      ;
+      
+   declaration
+      : type, identifier
+      ;
+      
+   if
+      : 'if', relExpression, '{', {statement, '\n'}, '}'
+      | 'if', relExpression, '{', {statement, '\n'}, '}', 'else',  '{', {statement, '\n'}, '}'
+      ;
+      
+   type
+      : integer
+      | boolean
+      
+   relExpression
+      : expression, 'is, 'equal', 'to', expression
+      | expression, 'is, 'greater', 'than', expression
+      | expression, 'is, 'less', 'than', expression
+      ;
+      
    expression
-     : arithmetics_exp
-     | logical_exp
-     | unary_exp
-     | variable
-     ;
-
-   arithmetics_exp
-     : expression '+' expression
-     | expression '-' expression
-     | expression '*' expression
-     | expression '/' expression
-     | expression '%' expression
-     | expression '**' expression
-     ;
-
-   logical_exp
-     : expression '&' expression
-     | expression '|' expression
-     | expression '!' expression 
-     ;
-
-   unary_exp
-     : expression '+'
-     | expression '-'
-     ;
+      : term, {('plus' | 'minus' | 'or'), term}
+      ;
+      
+   term
+      : factor, {('times' | 'divided', 'by' | 'and' ), factor}
+      ;
+      
+   factor
+      : '(', relExpression, ')'
+      | identifier
+      | input
+      | boolean
+      | integer
+      | ('plus' | 'minus' | 'not'), factor
+      ;
+      
+   identifier
+      : string, {int,string,'-','_'}
+      ;
 
    string
       : [a-z]+
       ;
 
-   int
+   integer
       : [0-9]+
       ;
 
-   bool
-     : 'True'
-     | 'False'
-     | 'true'
+   boolean
+     : 'true'
      | 'false'
      ;
 ```
